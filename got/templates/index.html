@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration and OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: light;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="email"], input[type="password"], input[type="text"]{
+            width: 97%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            font-size: 16px;
+            border: none;
+            width: 101%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;         
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+        .success-message {
+            color: green;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Register User</h2>
+    <form id="registerForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+
+        <button type="submit">Register</button>
+    </form>
+    <div id="registerMessage" class="error-message"></div>
+</div>
+
+<div class="container" style="display: none;" id="verifyContainer">
+    <h2>Verify OTP</h2>
+    <form id="verifyForm">
+        <label for="otp">OTP:</label>
+        <input type="text" id="otp" name="otp" required>
+
+        <button type="submit">Verify OTP</button>
+    </form>
+    <div id="verifyMessage" class="error-message"></div>
+</div>
+
+<script>
+    // Register user
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm_password").value;
+
+        if (password !== confirmPassword) {
+            document.getElementById("registerMessage").innerText = "Passwords do not match.";
+            return;
+        }
+
+        fetch('/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                document.getElementById("registerMessage").innerText = data.message;
+                document.getElementById("verifyContainer").style.display = 'block';
+            } else {
+                document.getElementById("registerMessage").innerText = data.message;
+            }
+        })
+        .catch(error => {
+            document.getElementById("registerMessage").innerText = "Something went wrong.";
+        });
+    });
+
+    // Verify OTP
+    document.getElementById("verifyForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        const email = document.getElementById("email").value;
+        const otp = document.getElementById("otp").value;
+
+        fetch('/verify-otp/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                otp: otp
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                document.getElementById("verifyMessage").innerText = data.message;
+            } else {
+                document.getElementById("verifyMessage").innerText = data.message;
+            }
+        })
+        .catch(error => {
+            document.getElementById("verifyMessage").innerText = "Something went wrong.";
+        });
+    });
+</script>
+
+</body>
+</html>
