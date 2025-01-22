@@ -27,10 +27,8 @@ class RegisterAPI(APIView):
                     'message' : 'register successfully check email.',
                     'data' : serializer.data,
                 
-                })
-                
-                
-                
+            })
+                    
             return Response({
                 'status' : 400,
                 'message' : 'something went wrong.',
@@ -60,7 +58,7 @@ class VerifyOTP(APIView):
                         'message' : 'something went wrong.',
                         'data' : 'invaild email'
 
-                    })
+                })
                     
                 if not user[0].otp == otp:
                     return Response({
@@ -80,9 +78,7 @@ class VerifyOTP(APIView):
                     'data' : {},
                 
                 })
-                
-                
-                
+                    
             return Response({
                 'status' : 400,
                 'message' : 'something went wrong.',
