@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from got.serializer import *
 from got.emails import *
-
+from got.models import User
 from django.http import JsonResponse
 
 
